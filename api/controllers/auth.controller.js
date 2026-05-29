@@ -49,7 +49,7 @@ import { Auth } from "../models/auth.schema.js";
 
 export const signup = async (req, res) => {
     try {
-        console.log(req.body);
+        console.log(req.body, "muskann");
 
         const { username, email, password } = req.body;
 
@@ -72,7 +72,7 @@ export const signup = async (req, res) => {
             email,
             password,
         });
-
+        console.log(user, "hello");
         return res.status(201).json({
             success: true,
             message: "User registered successfully",
@@ -133,16 +133,12 @@ export const signin = async (req, res, next) => {
                 message: "something went wrong"
             })
         }
-
-
-
         return res.status(200)
             .cookie("token", token, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "strict",
+                secure: process.env.NODE_ENV === "development" ? false : true,
+                sameSite: process.env.NODE_ENV === "development" ? "strict" : "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
-
             }).json({
                 message: "signin successfully",
                 user: {
@@ -172,8 +168,8 @@ export const logout = async (req, res, next) => {
         return res.status(200)
             .clearCookie("token", {
                 httpOnly: true,
-                secure: false,
-                sameSite: "strict",
+                secure: process.env.NODE_ENV === "development" ? false : true,
+                sameSite: process.env.NODE_ENV === "development" ? "strict" : "none",
             }).json({
                 message: "logout successfully",
             });
